@@ -2,9 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
 android {
   compileSdkVersion 29
-  buildToolsVersion "29.0.2"
+  buildToolsVersion "29.0.3"
 
   defaultConfig {
     applicationId "com.prudhvir3ddy.rideshare"
@@ -12,11 +15,13 @@ android {
     targetSdkVersion 29
     versionCode 1
     versionName "1.0"
-
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
   }
 
   buildTypes {
+    debug {
+      resValue("string", "google_maps_key", localProperties['apiKey'])
+    }
     release {
       minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -33,7 +38,8 @@ dependencies {
   testImplementation 'junit:junit:4.12'
   androidTestImplementation 'androidx.test.ext:junit:1.1.1'
   androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
-  //mapbox
-  implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.1.0'
+  implementation project(':simulator')
+  // Places Library (required for search places)
+  implementation 'com.google.android.libraries.places:places:2.2.0'
+  implementation 'com.google.android.gms:play-services-maps:17.0.0'
 }
